@@ -31,7 +31,7 @@ export default async function handler(req, res) {
   // Honeypot: real visitors never fill this hidden field. If it's filled,
   // pretend success so the bot doesn't learn anything, but do nothing.
   if (honeypot) {
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true, path: 'honeypot' });
   }
 
   if (!email || typeof email !== 'string' || !EMAIL_PATTERN.test(email)) {
@@ -79,9 +79,7 @@ export default async function handler(req, res) {
 
       // Duplicate email (unique index) — treat as a friendly success,
       // not an error, so re-submitting doesn't feel broken.
-      if (insertResponse.status === 409 || errorText.includes('duplicate key')) {
-        return res.status(200).json({ ok: true, duplicate: true });
-      }
+  return res.status(200).json({ ok: true, path: 'duplicate' });
 
       console.error('Supabase insert failed:', insertResponse.status, errorText);
       return res.status(500).json({
@@ -123,7 +121,7 @@ export default async function handler(req, res) {
       console.warn('RESEND_API_KEY or NOTIFY_FROM_EMAIL not set — skipping notification email.');
     }
 
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true, path: 'inserted' });
   } catch (error) {
     console.error('Unexpected error in /api/subscribe:', error);
     return res.status(500).json({
