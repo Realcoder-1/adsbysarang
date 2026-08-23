@@ -30,9 +30,7 @@ export default async function handler(req, res) {
 
   // Honeypot: real visitors never fill this hidden field. If it's filled,
   // pretend success so the bot doesn't learn anything, but do nothing.
-  if (honeypot) {
-    return res.status(200).json({ ok: true, path: 'honeypot' });
-  }
+  
 
   if (!email || typeof email !== 'string' || !EMAIL_PATTERN.test(email)) {
     return res.status(400).json({ error: 'A valid email address is required.' });
