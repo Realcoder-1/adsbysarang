@@ -53,7 +53,7 @@
         practiceName: form.practiceName.value.trim(),
         contactName: form.contactName.value.trim(),
         email: form.email.value.trim(),
-        honeypot: form.company_website.value, // should always be empty for real users
+         honeypot: '' // should always be empty for real users
       };
 
       submitBtn.disabled = true;
