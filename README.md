@@ -1,19 +1,18 @@
-# adsbysarang landing page
+# leadsbysarang landing page
 
-Static landing page for `adsbysarang`, adapted from the Leads by Hammad sample funnel but repositioned for brand-catered ad creatives for venture-backed companies.
+Static landing page for `leadsbysarang`, adapted from the Leads by Hammad sample funnel but repositioned for brand-catered ad creatives for venture-backed companies.
 
 ## Files
 
 - `index.html` - page structure and landing-page copy
-- `book.html` - dedicated calendar booking page
 - `styles.css` - responsive visual design
 - `script.js` - tab interaction, booking link, and optional webhook form submit
 
 ## Booking setup
 
-Fastest path: create a calendar event in Calendly, Cal.com, SavvyCal, or GoHighLevel, then replace `bookingUrl` in `script.js`. The landing page sends visitors to `book.html`, where the calendar is embedded.
+Fastest path: create a calendar in Calendly, Cal.com, SavvyCal, or GoHighLevel, then replace `bookingUrl` in `script.js`.
 
-Form path: keep the form and set `webhookUrl` in `script.js` to a Zapier, Make, n8n, HubSpot, Salesforce, or GoHighLevel webhook endpoint. This is optional and is not required for calendar booking.
+Form path: keep the form and set `webhookUrl` in `script.js` to a Zapier, Make, n8n, HubSpot, Salesforce, or GoHighLevel webhook endpoint.
 
 Best production path: use both. Send the prospect to a calendar for instant booking, and also fire a webhook so the lead record, Slack alert, email follow-up, and pipeline stage are created automatically.
 

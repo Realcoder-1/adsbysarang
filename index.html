@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>adsbysarang | Brand-catered ad creatives</title>
+    <title>leadsbysarang | Brand-catered ad creatives</title>
     <meta
       name="description"
-      content="adsbysarang creates brand-catered ad creatives for venture-backed companies that need better campaign assets."
+      content="leadsbysarang creates brand-catered ad creatives for venture-backed companies that need better campaign assets."
     >
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,17 +15,17 @@
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="#top" aria-label="adsbysarang home">
+      <a class="brand" href="#top" aria-label="leadsbysarang home">
         <span class="brand-mark">ls</span>
-        <span>adsbysarang</span>
+        <span>leadsbysarang</span>
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#offer">Offer</a>
         <a href="#fit">Fit</a>
         <a href="#process">Process</a>
-        <a href="book.html">Book</a>
+        <a href="#book">Book</a>
       </nav>
-      <a class="header-cta" href="book.html">Book a call</a>
+      <a class="header-cta" href="#book">Book a call</a>
     </header>
 
     <main id="top">
@@ -38,7 +38,7 @@
             ad concepts your team can test across paid channels.
           </p>
           <div class="hero-actions">
-            <a class="primary-button" href="book.html">Book a creative audit</a>
+            <a class="primary-button" href="#book">Book a creative audit</a>
             <a class="secondary-button" href="#offer">See what you get</a>
           </div>
           <div class="proof-strip" aria-label="Core service highlights">
@@ -207,20 +207,55 @@
           </ul>
         </div>
 
-        <div class="booking-panel cta-panel">
-          <p class="eyebrow">Next step</p>
-          <h3>Choose a time on the calendar.</h3>
-          <p>
-            The calendar opens on a separate booking page so visitors can focus on selecting a time without distractions.
-          </p>
-          <a class="primary-button" href="book.html">Open calendar</a>
+        <div class="booking-panel">
+          <div class="booking-tabs" role="tablist" aria-label="Booking type">
+            <button class="tab-button active" type="button" data-tab="calendar">Calendar</button>
+            <button class="tab-button" type="button" data-tab="form">Form</button>
+          </div>
+
+          <div class="tab-panel active" id="calendar-panel">
+            <div class="calendar-placeholder">
+              <p>Calendar embed goes here</p>
+              <strong>Replace the placeholder in <code>script.js</code> with your Calendly, Cal.com, or GoHighLevel embed URL.</strong>
+              <a class="primary-button compact" href="#" id="booking-link">Open booking link</a>
+            </div>
+          </div>
+
+          <form class="tab-panel lead-form" id="lead-form">
+            <label>
+              Work email
+              <input type="email" name="email" placeholder="founder@company.com" required>
+            </label>
+            <label>
+              Company
+              <input type="text" name="company" placeholder="Company name" required>
+            </label>
+            <label>
+              Company stage
+              <select name="stage" required>
+                <option value="">Select stage</option>
+                <option>Pre-seed</option>
+                <option>Seed</option>
+                <option>Series A</option>
+                <option>Series B+</option>
+              </select>
+            </label>
+            <label>
+              Priority ad channels
+              <input type="text" name="stack" placeholder="LinkedIn, Meta, X, YouTube, TikTok...">
+            </label>
+            <button class="primary-button" type="submit">Request creative audit</button>
+            <p class="form-note" id="form-note">No backend connected yet. Add your webhook URL in <code>script.js</code>.</p>
+          </form>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <span>adsbysarang</span>
+      <span>leadsbysarang</span>
       <span>Brand-catered ad creatives for venture-backed companies.</span>
     </footer>
+
+    <script src="script.js"></script>
   </body>
 </html>
