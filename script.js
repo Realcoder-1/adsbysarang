@@ -1,89 +1,94 @@
-// Restrained scroll-reveal for section headers and cards.
-// Respects prefers-reduced-motion via CSS; this only toggles a class.
-(function () {
-  const revealTargets = document.querySelectorAll(
-    '.process-step, .education-grid, .guarantee-inner, .faq-item, .footer-main'
-  );
+const bookingConfig = {
+  bookingUrl: "https://calendly.com/adsbysarang/creative-audit",
+  webhookUrl: ""
+};
 
-  revealTargets.forEach((el) => el.classList.add('reveal'));
+const isPlaceholderBookingUrl =
+  !bookingConfig.bookingUrl || bookingConfig.bookingUrl.includes("your-account");
 
-  if (!('IntersectionObserver' in window)) {
-    revealTargets.forEach((el) => el.classList.add('is-visible'));
-    return;
-  }
+const tabButtons = document.querySelectorAll(".tab-button");
+const panels = {
+  calendar: document.getElementById("calendar-panel"),
+  form: document.getElementById("lead-form")
+};
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.12 }
-  );
+tabButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const activeTab = button.dataset.tab;
 
-  revealTargets.forEach((el) => observer.observe(el));
-
-  // Only one FAQ item open at a time — keeps the list scannable.
-  const faqItems = document.querySelectorAll('.faq-item');
-  faqItems.forEach((item) => {
-    item.addEventListener('toggle', () => {
-      if (item.open) {
-        faqItems.forEach((other) => {
-          if (other !== item) other.open = false;
-        });
+    tabButtons.forEach((tab) => tab.classList.toggle("active", tab === button));
+    Object.entries(panels).forEach(([name, panel]) => {
+      if (panel) {
+        panel.classList.toggle("active", name === activeTab);
       }
     });
   });
+});
 
-  // Signup form — posts to /api/subscribe, which inserts into Supabase
-  // and sends a notification email. No page reload.
-  const form = document.getElementById('signupForm');
-  if (form) {
-    form.addEventListener('submit', async (event) => {
+const bookingLink = document.getElementById("booking-link");
+const calendlyWidget = document.getElementById("calendly-widget");
+
+if (calendlyWidget && !isPlaceholderBookingUrl) {
+  calendlyWidget.dataset.url = `${bookingConfig.bookingUrl}?hide_gdpr_banner=1`;
+
+  const calendlyScript = document.createElement("script");
+  calendlyScript.src = "https://assets.calendly.com/assets/external/widget.js";
+  calendlyScript.async = true;
+  document.body.appendChild(calendlyScript);
+}
+
+if (bookingLink) {
+  bookingLink.href = bookingConfig.bookingUrl;
+  bookingLink.addEventListener("click", (event) => {
+    if (isPlaceholderBookingUrl) {
       event.preventDefault();
+      const formNote = document.getElementById("form-note");
+      const formTab = document.querySelector('[data-tab="form"]');
 
-      const statusEl = document.getElementById('signupStatus');
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const originalBtnText = submitBtn.textContent;
-
-      const payload = {
-        practiceName: form.practiceName.value.trim(),
-        contactName: form.contactName.value.trim(),
-        email: form.email.value.trim(),
-         honeypot: '' /// should always be empty for real users
-      };
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Sending…';
-      statusEl.textContent = '';
-      statusEl.classList.remove('is-success', 'is-error');
-
-      try {
-        const response = await fetch('/api/subscribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-
-        const result = await response.json().catch(() => ({}));
-
-        if (!response.ok) {
-          throw new Error(result.error || 'Something went wrong. Please try again.');
-        }
-
-        form.reset();
-        statusEl.textContent = "Got it — we'll follow up with your ad shortly.";
-        statusEl.classList.add('is-success');
-      } catch (err) {
-        statusEl.textContent = err.message || 'Something went wrong. Please email us directly instead.';
-        statusEl.classList.add('is-error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalBtnText;
+      if (formNote) {
+        formNote.textContent =
+          "Add your live booking URL in script.js, or use the form tab for webhook capture.";
       }
-    });
-  }
-})();
+
+      if (formTab) {
+        formTab.click();
+      }
+    }
+  });
+}
+
+const leadForm = document.getElementById("lead-form");
+
+if (leadForm) {
+  leadForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const note = document.getElementById("form-note");
+    const payload = Object.fromEntries(new FormData(form).entries());
+    payload.source = "adsbysarang creative landing page";
+    payload.requestedAt = new Date().toISOString();
+
+    if (!bookingConfig.webhookUrl) {
+      note.textContent = `Webhook not connected yet. Payload ready: ${JSON.stringify(payload)}`;
+      return;
+    }
+
+    try {
+      const response = await fetch(bookingConfig.webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Webhook returned ${response.status}`);
+      }
+
+      form.reset();
+      note.textContent = "Request sent. Check your CRM, automation tool, or webhook destination.";
+    } catch (error) {
+      note.textContent = `Could not send request: ${error.message}`;
+    }
+  });
+}
